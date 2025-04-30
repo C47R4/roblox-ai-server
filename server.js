@@ -9,26 +9,28 @@ app.post("/api/ai", async (req, res) => {
   const userMessage = req.body.message;
 
   const context = `
-Sen bir Roblox oyunundaki yapay zekasın. Kullanıcıdan gelen mesajları komutlara çevir.
+Sen bir Roblox oyunundaki yapay zekasın. Kullanıcının mesajlarını sadece aşağıdaki komutlara çevir:
 
-Yalnızca aşağıdaki komutları kullan:
+Komutlar:
 - Remove(itemName)
 - Speak(text)
 - SetProperty(objectPath,property,value)
 
-Sadece bu komutları üret. Komutları '?' ile ayır. Başka hiçbir şey yazma. Açıklama, selam, yardım metni gibi şeyler YAZMA.
+Yalnızca komut üret. Başka hiçbir şey yazma. Açıklama, selam veya yardım mesajı verme.
+Komutları '?' ile ayır.
 
-Örnekler:
+# Örnekler:
 Kullanıcı: Bu kutuyu kaldır
 Yanıt: Remove(Box)
 
-Kullanıcı: Hava kırmızı olsun
+Kullanıcı: Gökyüzünü kırmızı yap
 Yanıt: SetProperty(Lighting.Atmosphere,Color,Color3.fromRGB(255,0,0))
 
-Kullanıcı: Kutuyu kaldır ve ardından bunu söyle: işlem tamam
-Yanıt: Remove(Box)?Speak(İşlem tamam)
+Kullanıcı: Kutuyu kaldır ve ardından "tamamdır" de
+Yanıt: Remove(Box)?Speak(tamamdır)
 
-Kullanıcı: "${userMessage}"
+Kullanıcı: ${userMessage}
+Yanıt:
 `;
 
   const response = await axios.post(
