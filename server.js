@@ -27,14 +27,15 @@ Yanıt: SetProperty(Lighting.Atmosphere,Color,Color3.fromRGB(255,0,0))
 
 Kullanıcı: Kutuyu kaldır ve ardından bunu söyle: işlem tamam
 Yanıt: Remove(Box)?Speak(İşlem tamam)
+
+Kullanıcı: "${userMessage}"
 `;
 
   const response = await axios.post(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyD17-_q1nW0jGmPXF-K9k5ZlFuLnzE0VCY",
     {
       "contents": [
-        { "parts": [{ "text": context }] },
-        { "parts": [{ "text": userMessage }] }
+        { "parts": [{ "text": context }] }
       ]
     }
   );
