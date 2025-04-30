@@ -12,7 +12,7 @@ app.post("/api/ai", async (req, res) => {
   const response = await axios.post(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyD17-_q1nW0jGmPXF-K9k5ZlFuLnzE0VCY",
     {
-      contents: [{ parts: [{ text: userMessage }] }],
+      "contents": [{ "parts": [{ "text": userMessage }] }],
     }
   );
 
