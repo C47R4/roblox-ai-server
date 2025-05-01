@@ -6,34 +6,50 @@ const axios = require("axios");
 app.use(express.json());
 
 const memoryMap = new Map();
+const MAX_MEMORY_LENGTH = 20; // Örnek değer
 
 app.post("/api/ai", async (req, res) => {
   const { userId, message, systemMessage } = req.body;
 
   if (!memoryMap.has(userId)) memoryMap.set(userId, []);
 
-  const memory = memoryMap.get(userId);
+  let memory = memoryMap.get(userId);
 
-  if (systemMessage && !memory.some(msg => msg.role === "system")) {
-    memory.unshift({ role: "user", parts: [{ text: systemMessage }] });
+  // Sistem mesajını ve kullanıcı mesajını birleştir (sadece ilk mesaj için)
+  let combinedMessage = message;
+  if (systemMessage && memory.length === 0) {
+    combinedMessage = systemMessage + "\n\n" + message;
   }
 
-  memory.push({ role: "user", parts: [{ text: message }] });
-  
-  const response = await axios.post(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyD17-_q1nW0jGmPXF-K9k5ZlFuLnzE0VCY",
-    {
-      "contents": memory
-    }
-  );
+  memory.push({ role: "user", parts: [{ text: combinedMessage }] });
 
-  const aiReply = response.data.candidates[0].content.parts[0].text;
+  // Belleği kırp (token limitlerini aşmamak için)
+  if (memory.length > MAX_MEMORY_LENGTH) {
+    memory = memory.slice(memory.length - MAX_MEMORY_LENGTH);
+  }
 
-  memory.push({ role: "model", parts: [{ text: aiReply }] });
-  
-  res.json({ reply: aiReply });
+  try {
+    const response = await axios.post(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyD17-_q1nW0jGmPXF-K9k5ZlFuLnzE0VCY",
+      {
+        "contents": memory
+      }
+    );
+
+    const aiReply = response.data.candidates[0].content.parts[0].text;
+
+    memory.push({ role: "model", parts: [{ text: aiReply }] });
+
+    await memoryMap.set(userId, memory); // Gelecekteki asenkron işlemler için
+
+    res.json({ reply: aiReply });
+
+  } catch (error) {
+    console.error("API Hatası:", error);
+    res.status(500).json({ error: "AI servisiyle iletişimde bir sorun oluştu." });
+  }
 });
 
 app.listen(port, () => {
-   console.log(`AI sunucusu çalışıyor! Port: ${port}`);
- });
+  console.log(`AI sunucusu çalışıyor! Port: ${port}`);
+});
