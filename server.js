@@ -25,7 +25,7 @@ app.post("/api/ai", async (req, res) => {
 
   // Belleği kırp (token limitlerini aşmamak için)
   if (memory.length > MAX_MEMORY_LENGTH) {
-    memory = memory.splice(1, 1);
+    memory.splice(1, 1);
   }
 
   try {
