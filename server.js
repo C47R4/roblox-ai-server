@@ -9,16 +9,16 @@ const memoryMap = new Map();
 const MAX_MEMORY_LENGTH = 20; // Örnek değer
 
 app.post("/api/ai", async (req, res) => {
-  const { userId, message, systemMessage } = req.body;
+  const { userId, userData, message, systemMessage } = req.body;
 
   if (!memoryMap.has(userId)) memoryMap.set(userId, []);
 
   let memory = memoryMap.get(userId);
 
   // Sistem mesajını ve kullanıcı mesajını birleştir (sadece ilk mesaj için)
-  let combinedMessage = message;
+  let combinedMessage = "PlayerData:" + userData + "\n\n" + message;
   if (systemMessage && memory.length === 0) {
-    combinedMessage = systemMessage + "\n\n" + message;
+    combinedMessage = systemMessage + "\n PlayerData:" + userData + "\n\n" + message;
   }
 
   memory.push({ role: "user", parts: [{ text: combinedMessage }] });
