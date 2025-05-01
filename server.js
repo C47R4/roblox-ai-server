@@ -15,7 +15,7 @@ app.post("/api/ai", async (req, res) => {
   const memory = memoryMap.get(userId);
 
   if (systemMessage && !memory.some(msg => msg.role === "system")) {
-    memory.unshift({ role: "system", parts: [{ text: systemMessage }] });
+    memory.unshift({ role: "user", parts: [{ text: systemMessage }] });
   }
 
   memory.push({ role: "user", parts: [{ text: message }] });
