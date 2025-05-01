@@ -16,9 +16,9 @@ app.post("/api/ai", async (req, res) => {
   let memory = memoryMap.get(userId);
 
   // Sistem mesajını ve kullanıcı mesajını birleştir (sadece ilk mesaj için)
-  let combinedMessage = "PlayerData:" + userData + "\n\n" + message;
+  let combinedMessage = "Data:" + userData + "\n\n" + message;
   if (systemMessage && memory.length === 0) {
-    combinedMessage = systemMessage + "\n PlayerData:" + userData + "\n\n" + message;
+    combinedMessage = systemMessage + "\n Data:" + userData + "\n\n" + message;
   }
 
   memory.push({ role: "user", parts: [{ text: combinedMessage }] });
