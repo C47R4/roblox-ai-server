@@ -6,7 +6,7 @@ const axios = require("axios");
 app.use(express.json());
 
 const memoryMap = new Map();
-const MAX_MEMORY_LENGTH = 20; // Örnek değer
+const MAX_MEMORY_LENGTH = 60; // Örnek değer
 
 app.post("/api/ai", async (req, res) => {
   const { serverId, userData, message, systemMessage, report } = req.body;
