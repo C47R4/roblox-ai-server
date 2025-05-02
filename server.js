@@ -9,16 +9,26 @@ const memoryMap = new Map();
 const MAX_MEMORY_LENGTH = 20; // Örnek değer
 
 app.post("/api/ai", async (req, res) => {
-  const { userId, userData, message, systemMessage } = req.body;
+  const { serverId, userData, message, systemMessage, report } = req.body;
 
-  if (!memoryMap.has(userId)) memoryMap.set(userId, []);
+  if (!memoryMap.has(serverId)) memoryMap.set(serverId, []);
 
-  let memory = memoryMap.get(userId);
+  let memory = memoryMap.get(serverId);
 
   // Sistem mesajını ve kullanıcı mesajını birleştir (sadece ilk mesaj için)
-  let combinedMessage = "Data:" + userData + "\n\n" + message;
-  if (systemMessage && memory.length === 0) {
-    combinedMessage = systemMessage + "\n Data:" + userData + "\n\n" + message;
+  let combinedMessage = ""
+  if (memory.length === 0){
+    if (report) {
+      combinedMessage = systemMessage + "\n" + message + "\n" + report;
+    } else {
+      combinedMessage = systemMessage + "\n Data:" + userData + "\n\n" + message;
+    }
+  } else {
+    if (report) {
+      combinedMessage = message + "\n" + report;
+    } else {
+      combinedMessage = "Data:" + userData + "\n\n" + message;
+    }
   }
 
   memory.push({ role: "user", parts: [{ text: combinedMessage }] });
@@ -40,7 +50,7 @@ app.post("/api/ai", async (req, res) => {
 
     memory.push({ role: "model", parts: [{ text: aiReply }] });
 
-    await memoryMap.set(userId, memory); // Gelecekteki asenkron işlemler için
+    await memoryMap.set(serverId, memory); // Gelecekteki asenkron işlemler için
 
     res.json({ reply: aiReply });
 
