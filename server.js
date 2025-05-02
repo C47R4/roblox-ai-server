@@ -40,7 +40,7 @@ app.post("/api/ai", async (req, res) => {
 
   try {
     const response = await axios.post(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=AIzaSyCH_Dbzr141pnqdZQPLm9E7ZghuSyA5LOw",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=AIzaSyCH_Dbzr141pnqdZQPLm9E7ZghuSyA5LOw",
       {
         "contents": memory
       }
